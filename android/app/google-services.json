@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "221716491824",
+    "project_id": "nkust-schedule-app",
+    "storage_bucket": "nkust-schedule-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221716491824:android:594ab02d6f6b8a080087f5",
+        "android_client_info": {
+          "package_name": "com.example.class_schedule_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6ZDmmxgVuxgykcg-nwdDgF8jedOB0SiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
