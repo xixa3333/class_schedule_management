@@ -1,4 +1,4 @@
-```markdown
+
 # 🎓 NKUST 智慧課表管理系統 (Course Schedule Manager)
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
@@ -54,8 +54,6 @@ graph LR
 ```bash
 git clone [https://github.com/你的帳號/你的專案名稱.git](https://github.com/你的帳號/你的專案名稱.git)
 cd 你的專案名稱
-
-```
 
 
 2. **安裝依賴套件**
