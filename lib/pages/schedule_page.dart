@@ -8,6 +8,7 @@ import 'settings_page.dart'; // [新增]
 import 'package:provider/provider.dart'; // [缺這行] 才能用 Provider.of
 import '../providers/settings_provider.dart'; // [缺這行] 才能辨識 SettingsProvider 類別
 import '../services/notification_service.dart';
+import '../services/widget_service.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -43,6 +44,17 @@ class _SchedulePageState extends State<SchedulePage> {
     _initSemesterOptions();
 
     _loadCourses();
+
+    _refreshWidget();
+  }
+
+  Future<void> _refreshWidget() async {
+    try {
+      final isar = await _service.db;
+      await WidgetService.updateWidgetData(isar);
+    } catch (e) {
+      debugPrint("啟動時更新 Widget 失敗: $e");
+    }
   }
 
   // [修改] 初始化學期選單：連續性補齊邏輯

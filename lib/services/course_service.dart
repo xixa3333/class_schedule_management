@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // [新增] 匯入這行
 import '../models/course.dart';
 import '../models/user_settings.dart'; // [新增]
+import 'widget_service.dart';
 
 class CourseService {
   late Future<Isar> db;
@@ -54,6 +55,7 @@ class CourseService {
       // 如果沒登入 (理論上不會發生)，可以選擇不存或拋出錯誤
       // 這裡簡單處理：直接 return
       print("尚未登入，無法儲存");
+      await WidgetService.updateWidgetData(isar);
       return;
     }
 
@@ -113,6 +115,7 @@ class CourseService {
     await isar.writeTxn(() async {
       await isar.courses.delete(id);
     });
+    await WidgetService.updateWidgetData(isar);
   }
 
   // [新增] 取得該使用者「所有學期」的課程 (用於統計)

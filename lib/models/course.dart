@@ -34,4 +34,16 @@ class Course {
 
   // 用來在 UI 顯示 "第 1-3 節"
   String get periodString => '第 $startPeriod - $endPeriod 節';
+
+  // 將必要資訊轉換為 JSON 格式，方便傳遞給桌面 Widget
+  Map<String, dynamic> toJson() {
+    return {
+      'courseName': courseName,
+      'classroom': classroom ?? '未安排',
+      'startPeriod': startPeriod,
+      'endPeriod': endPeriod,
+      'periodString': periodString,
+      'colorHex': colorHex.toRadixString(16).padLeft(8, '0'),
+    };
+  }
 }
