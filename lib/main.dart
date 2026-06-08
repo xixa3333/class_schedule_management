@@ -10,17 +10,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print("🚀 應用啟動中...");
+  print("應用啟動中...");
 
   // [新增] 初始化推播服務
-  print("📦 正在初始化推播服務...");
+  print("正在初始化推播服務...");
   await NotificationService.init();
-  print("✅ 推播服務初始化完成");
+  print("推播服務初始化完成");
 
-  // 🌟 [新增] 應用啟動時立即請求推播權限
-  print("🔐 請求推播和鬧鐘權限...");
+  // [新增] 應用啟動時立即請求推播權限
+  print("請求推播和鬧鐘權限...");
   await NotificationService.requestPermissions();
-  print("✅ 所有權限已請求");
+  print("所有權限已請求");
 
   runApp(
     // [新增] 使用 ChangeNotifierProvider 包住整個 App

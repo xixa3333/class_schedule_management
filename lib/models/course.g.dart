@@ -52,38 +52,53 @@ const CourseSchema = CollectionSchema(
       name: r'endPeriod',
       type: IsarType.long,
     ),
-    r'note': PropertySchema(
+    r'isDeleted': PropertySchema(
       id: 7,
+      name: r'isDeleted',
+      type: IsarType.bool,
+    ),
+    r'isSynced': PropertySchema(
+      id: 8,
+      name: r'isSynced',
+      type: IsarType.bool,
+    ),
+    r'note': PropertySchema(
+      id: 9,
       name: r'note',
       type: IsarType.string,
     ),
     r'periodString': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'periodString',
       type: IsarType.string,
     ),
     r'score': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'score',
       type: IsarType.double,
     ),
     r'semester': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'semester',
       type: IsarType.string,
     ),
     r'startPeriod': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'startPeriod',
       type: IsarType.long,
     ),
     r'teacher': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'teacher',
       type: IsarType.string,
     ),
+    r'updatedAt': PropertySchema(
+      id: 15,
+      name: r'updatedAt',
+      type: IsarType.long,
+    ),
     r'userId': PropertySchema(
-      id: 13,
+      id: 16,
       name: r'userId',
       type: IsarType.string,
     )
@@ -117,6 +132,32 @@ const CourseSchema = CollectionSchema(
           name: r'semester',
           type: IndexType.value,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'isSynced': IndexSchema(
+      id: -39763503327887510,
+      name: r'isSynced',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'isSynced',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'isDeleted': IndexSchema(
+      id: -786475870904832312,
+      name: r'isDeleted',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'isDeleted',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -178,13 +219,16 @@ void _courseSerialize(
   writer.writeLong(offsets[4], object.dayOfWeek);
   writer.writeBool(offsets[5], object.enableNotification);
   writer.writeLong(offsets[6], object.endPeriod);
-  writer.writeString(offsets[7], object.note);
-  writer.writeString(offsets[8], object.periodString);
-  writer.writeDouble(offsets[9], object.score);
-  writer.writeString(offsets[10], object.semester);
-  writer.writeLong(offsets[11], object.startPeriod);
-  writer.writeString(offsets[12], object.teacher);
-  writer.writeString(offsets[13], object.userId);
+  writer.writeBool(offsets[7], object.isDeleted);
+  writer.writeBool(offsets[8], object.isSynced);
+  writer.writeString(offsets[9], object.note);
+  writer.writeString(offsets[10], object.periodString);
+  writer.writeDouble(offsets[11], object.score);
+  writer.writeString(offsets[12], object.semester);
+  writer.writeLong(offsets[13], object.startPeriod);
+  writer.writeString(offsets[14], object.teacher);
+  writer.writeLong(offsets[15], object.updatedAt);
+  writer.writeString(offsets[16], object.userId);
 }
 
 Course _courseDeserialize(
@@ -202,12 +246,15 @@ Course _courseDeserialize(
   object.enableNotification = reader.readBool(offsets[5]);
   object.endPeriod = reader.readLong(offsets[6]);
   object.id = id;
-  object.note = reader.readStringOrNull(offsets[7]);
-  object.score = reader.readDoubleOrNull(offsets[9]);
-  object.semester = reader.readString(offsets[10]);
-  object.startPeriod = reader.readLong(offsets[11]);
-  object.teacher = reader.readStringOrNull(offsets[12]);
-  object.userId = reader.readStringOrNull(offsets[13]);
+  object.isDeleted = reader.readBool(offsets[7]);
+  object.isSynced = reader.readBool(offsets[8]);
+  object.note = reader.readStringOrNull(offsets[9]);
+  object.score = reader.readDoubleOrNull(offsets[11]);
+  object.semester = reader.readString(offsets[12]);
+  object.startPeriod = reader.readLong(offsets[13]);
+  object.teacher = reader.readStringOrNull(offsets[14]);
+  object.updatedAt = reader.readLong(offsets[15]);
+  object.userId = reader.readStringOrNull(offsets[16]);
   return object;
 }
 
@@ -233,18 +280,24 @@ P _courseDeserializeProp<P>(
     case 6:
       return (reader.readLong(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readString(offset)) as P;
     case 11:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 13:
+      return (reader.readLong(offset)) as P;
+    case 14:
+      return (reader.readStringOrNull(offset)) as P;
+    case 15:
+      return (reader.readLong(offset)) as P;
+    case 16:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -282,6 +335,22 @@ extension CourseQueryWhereSort on QueryBuilder<Course, Course, QWhere> {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'semester'),
+      );
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhere> anyIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'isSynced'),
+      );
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhere> anyIsDeleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'isDeleted'),
       );
     });
   }
@@ -640,6 +709,96 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
             .addWhereClause(IndexWhereClause.lessThan(
               indexName: r'semester',
               upper: [''],
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhereClause> isSyncedEqualTo(
+      bool isSynced) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'isSynced',
+        value: [isSynced],
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhereClause> isSyncedNotEqualTo(
+      bool isSynced) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [],
+              upper: [isSynced],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [isSynced],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [isSynced],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [],
+              upper: [isSynced],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhereClause> isDeletedEqualTo(
+      bool isDeleted) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'isDeleted',
+        value: [isDeleted],
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterWhereClause> isDeletedNotEqualTo(
+      bool isDeleted) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isDeleted',
+              lower: [],
+              upper: [isDeleted],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isDeleted',
+              lower: [isDeleted],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isDeleted',
+              lower: [isDeleted],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isDeleted',
+              lower: [],
+              upper: [isDeleted],
+              includeUpper: false,
             ));
       }
     });
@@ -1202,6 +1361,26 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> isDeletedEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isDeleted',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> isSyncedEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isSynced',
+        value: value,
       ));
     });
   }
@@ -1888,6 +2067,59 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Course, Course, QAfterFilterCondition> updatedAtEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> updatedAtGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> updatedAtLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> updatedAtBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Course, Course, QAfterFilterCondition> userIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2124,6 +2356,30 @@ extension CourseQuerySortBy on QueryBuilder<Course, Course, QSortBy> {
     });
   }
 
+  QueryBuilder<Course, Course, QAfterSortBy> sortByIsDeleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isDeleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> sortByIsDeletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isDeleted', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> sortByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> sortByIsSyncedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.desc);
+    });
+  }
+
   QueryBuilder<Course, Course, QAfterSortBy> sortByNote() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'note', Sort.asc);
@@ -2193,6 +2449,18 @@ extension CourseQuerySortBy on QueryBuilder<Course, Course, QSortBy> {
   QueryBuilder<Course, Course, QAfterSortBy> sortByTeacherDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'teacher', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 
@@ -2306,6 +2574,30 @@ extension CourseQuerySortThenBy on QueryBuilder<Course, Course, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Course, Course, QAfterSortBy> thenByIsDeleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isDeleted', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> thenByIsDeletedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isDeleted', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> thenByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> thenByIsSyncedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.desc);
+    });
+  }
+
   QueryBuilder<Course, Course, QAfterSortBy> thenByNote() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'note', Sort.asc);
@@ -2378,6 +2670,18 @@ extension CourseQuerySortThenBy on QueryBuilder<Course, Course, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Course, Course, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterSortBy> thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<Course, Course, QAfterSortBy> thenByUserId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userId', Sort.asc);
@@ -2436,6 +2740,18 @@ extension CourseQueryWhereDistinct on QueryBuilder<Course, Course, QDistinct> {
     });
   }
 
+  QueryBuilder<Course, Course, QDistinct> distinctByIsDeleted() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isDeleted');
+    });
+  }
+
+  QueryBuilder<Course, Course, QDistinct> distinctByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isSynced');
+    });
+  }
+
   QueryBuilder<Course, Course, QDistinct> distinctByNote(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2473,6 +2789,12 @@ extension CourseQueryWhereDistinct on QueryBuilder<Course, Course, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'teacher', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Course, Course, QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 
@@ -2533,6 +2855,18 @@ extension CourseQueryProperty on QueryBuilder<Course, Course, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Course, bool, QQueryOperations> isDeletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isDeleted');
+    });
+  }
+
+  QueryBuilder<Course, bool, QQueryOperations> isSyncedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isSynced');
+    });
+  }
+
   QueryBuilder<Course, String?, QQueryOperations> noteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'note');
@@ -2566,6 +2900,12 @@ extension CourseQueryProperty on QueryBuilder<Course, Course, QQueryProperty> {
   QueryBuilder<Course, String?, QQueryOperations> teacherProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'teacher');
+    });
+  }
+
+  QueryBuilder<Course, int, QQueryOperations> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 
