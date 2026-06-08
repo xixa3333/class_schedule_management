@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // [新增] Firestore
 import '../models/course.dart';
 import '../models/user_settings.dart';
+import '../models/friend.dart';
 import 'widget_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -81,7 +82,7 @@ class CourseService {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       return await Isar.open(
-        [CourseSchema, UserSettingsSchema], // [修改] 加入 UserSettingsSchema
+        [CourseSchema, UserSettingsSchema, FriendSchema], // [修改] 加入 FriendSchema
         directory: dir.path,
         inspector: true, // 開發模式下可以開啟檢測器
       );

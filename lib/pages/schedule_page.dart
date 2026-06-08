@@ -9,6 +9,7 @@ import 'package:provider/provider.dart'; // [缺這行] 才能用 Provider.of
 import '../providers/settings_provider.dart'; // [缺這行] 才能辨識 SettingsProvider 類別
 import '../services/notification_service.dart';
 import '../services/widget_service.dart';
+import 'friends_page.dart'; // [新增]
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -176,6 +177,18 @@ class _SchedulePageState extends State<SchedulePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const SettingsPage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.people),
+            tooltip: '我的好友',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FriendsPage(currentSemester: _currentSemester),
+                ),
               );
             },
           ),

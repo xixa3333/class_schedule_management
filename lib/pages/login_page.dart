@@ -82,6 +82,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
+
         context,
       ).showSnackBar(SnackBar(content: Text(e.message ?? '發生錯誤')));
     } finally {
